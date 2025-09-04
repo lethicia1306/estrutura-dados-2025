@@ -4,12 +4,13 @@
  * * @author Equipe da Disciplina
  * @version 2025.08.14
  */
+
 public class ArvoreBinaria<T extends Comparable<T>> implements Arvore<T> {
     NodoArvore<T> raiz;
 
-    /**
-     * Construtor da árvore. Inicia uma árvore vazia.
-     */
+    
+     //Construtor da árvore. Inicia uma árvore vazia.
+     
     public ArvoreBinaria() {
         this.raiz = null;
     }
@@ -95,7 +96,48 @@ public class ArvoreBinaria<T extends Comparable<T>> implements Arvore<T> {
     @Override
     public void remover(T objeto) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remover'");
+       // throw new UnsupportedOperationException("Unimplemented method 'remover'");
+    this.raiz = removerRecursivo(this.raiz, objeto);
+}
+
+
+private NodoArvore<T> removerRecursivo(NodoArvore<T> noAtual, T objeto) {
+    if (noAtual == null) return null;
+
+    int comparacao = objeto.compareTo(noAtual.objeto);
+
+    if (comparacao < 0) {
+        noAtual.filhoEsquerda = removerRecursivo(noAtual.filhoEsquerda, objeto);
+    } else if (comparacao > 0) {
+        noAtual.filhoDireita = removerRecursivo(noAtual.filhoDireita, objeto);
+    } else {
+        // Caso 1: sem filhos
+        if (noAtual.filhoEsquerda == null && noAtual.filhoDireita == null) {
+            return null;
+        }
+
+        // Caso 2: um filho
+        if (noAtual.filhoEsquerda == null) {
+            return noAtual.filhoDireita;
+        } else if (noAtual.filhoDireita == null) {
+            return noAtual.filhoEsquerda;
+        }
+
+        // Caso 3: dois filhos
+        NodoArvore<T> sucessor = encontrarMenor(noAtual.filhoDireita);
+        noAtual.objeto = sucessor.objeto;
+        noAtual.filhoDireita = removerRecursivo(noAtual.filhoDireita, sucessor.objeto);
+    }
+
+    return noAtual;
+}
+
+private NodoArvore<T> encontrarMenor(NodoArvore<T> no) {
+    while (no.filhoEsquerda != null) {
+        no = no.filhoEsquerda;
+    }
+    return no;
+}
     }
 
     /**
@@ -163,4 +205,3 @@ public class ArvoreBinaria<T extends Comparable<T>> implements Arvore<T> {
         }
     }
 
-}
